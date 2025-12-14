@@ -1,0 +1,57 @@
+name: elixir-symfony-recruitment-task
+
+services:
+  db:
+    image: postgres:15
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: phoenix_app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d phoenix_app"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+  phoenix:
+    build:
+      context: ./phoenix-api
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ecto://postgres:postgres@db/phoenix_app
+      PHX_HOST: localhost
+      PORT: "4000"
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "4000:4000"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:4000/health.json >/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 10s
+
+  symfony:
+    build:
+      context: ./symfony-app
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      PHOENIX_BASE_URL: http://phoenix:4000
+    depends_on:
+      phoenix:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
