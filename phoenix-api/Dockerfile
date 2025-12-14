@@ -12,9 +12,20 @@ WORKDIR /app
 
 RUN mix local.hex --force && mix local.rebar --force
 
-COPY dev_server.exs /app/dev_server.exs
-COPY www /app/www
+ENV MIX_ENV=dev
 
-CMD ["elixir", "dev_server.exs"]
+COPY mix.exs mix.lock ./
+RUN mix deps.get
+RUN mix deps.compile
+
+COPY .formatter.exs ./
+COPY config config
+COPY lib lib
+COPY priv priv
+COPY test test
+
+EXPOSE 4000
+
+CMD ["sh", "-lc", "mix ecto.create && mix ecto.migrate && mix phx.server"]
 
 
