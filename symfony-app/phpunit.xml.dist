@@ -12,6 +12,8 @@
         <ini name="error_reporting" value="-1"/>
         <server name="APP_ENV" value="test" force="true"/>
         <server name="SHELL_VERBOSITY" value="-1"/>
+        <env name="KERNEL_CLASS" value="App\Kernel"/>
+        <env name="PHOENIX_BASE_URL" value="http://phoenix:4000"/>
     </php>
 
     <testsuites>
