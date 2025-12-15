@@ -10,6 +10,7 @@ defmodule PhoenixApiWeb.Router do
 
     get "/health.json", HealthController, :show
     resources "/users", UserController, only: [:index, :show, :create, :update, :delete]
+    post "/import", ImportController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
