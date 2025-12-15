@@ -14,8 +14,11 @@ use App\PhoenixApi\Exception\PhoenixApiException;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+use function is_array;
+use function is_int;
+use function is_string;
 
-final readonly class PhoenixApiClient
+final readonly class PhoenixApiClient implements PhoenixApiClientInterface
 {
     public function __construct(
         private HttpClientInterface $client,
@@ -32,18 +35,18 @@ final readonly class PhoenixApiClient
         $data = $payload['data'] ?? null;
         $metaRaw = $payload['meta'] ?? null;
 
-        if (!\is_array($data)) {
+        if (!is_array($data)) {
             throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
         }
 
-        if (!\is_array($metaRaw)) {
+        if (!is_array($metaRaw)) {
             throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
         }
 
         $users = [];
 
         foreach ($data as $row) {
-            if (!\is_array($row)) {
+            if (!is_array($row)) {
                 throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
             }
 
@@ -63,7 +66,7 @@ final readonly class PhoenixApiClient
     {
         $payload = $this->json('GET', "/users/{$id}");
 
-        if (!isset($payload['data']) || !\is_array($payload['data'])) {
+        if (!isset($payload['data']) || !is_array($payload['data'])) {
             throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
         }
 
@@ -80,7 +83,7 @@ final readonly class PhoenixApiClient
             'json' => $input->toArray(),
         ], expectedStatus: 201);
 
-        if (!isset($payload['data']) || !\is_array($payload['data'])) {
+        if (!isset($payload['data']) || !is_array($payload['data'])) {
             throw new PhoenixApiException(201, 'invalid_response', 'Invalid response');
         }
 
@@ -97,7 +100,7 @@ final readonly class PhoenixApiClient
             'json' => $input->toArray(),
         ]);
 
-        if (!isset($payload['data']) || !\is_array($payload['data'])) {
+        if (!isset($payload['data']) || !is_array($payload['data'])) {
             throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
         }
 
@@ -127,7 +130,7 @@ final readonly class PhoenixApiClient
 
         $inserted = $payload['data']['inserted'] ?? null;
 
-        if (!\is_int($inserted) && !(\is_string($inserted) && ctype_digit($inserted))) {
+        if (!is_int($inserted) && !(is_string($inserted) && ctype_digit($inserted))) {
             throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
         }
 
@@ -164,6 +167,6 @@ final readonly class PhoenixApiClient
             throw PhoenixApiException::fromResponse($status, $payload);
         }
 
-        return \is_array($payload) ? $payload : [];
+        return is_array($payload) ? $payload : [];
     }
 }

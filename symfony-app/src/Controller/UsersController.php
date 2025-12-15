@@ -9,7 +9,7 @@ use App\Form\Model\UsersFilterData;
 use App\Form\UserType;
 use App\Form\UsersFilterType;
 use App\PhoenixApi\Exception\PhoenixApiException;
-use App\PhoenixApi\PhoenixApiClient;
+use App\PhoenixApi\PhoenixApiClientInterface;
 use App\Users\PhoenixApiUiErrorMapper;
 use App\Users\PhoenixValidationErrorApplier;
 use App\Users\UserInputFactory;
@@ -61,7 +61,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('', name: 'users_index', methods: ['GET'])]
-    public function index(Request $request, PhoenixApiClient $client, UsersListQueryFactory $queryFactory, PhoenixApiUiErrorMapper $errorMapper): Response
+    public function index(Request $request, PhoenixApiClientInterface $client, UsersListQueryFactory $queryFactory, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         $filterData = new UsersFilterData();
         $filterForm = $this->createForm(UsersFilterType::class, $filterData);
@@ -98,7 +98,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/new', name: 'users_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, PhoenixApiClient $client, UserInputFactory $inputFactory, PhoenixValidationErrorApplier $validationErrorApplier, PhoenixApiUiErrorMapper $errorMapper): Response
+    public function new(Request $request, PhoenixApiClientInterface $client, UserInputFactory $inputFactory, PhoenixValidationErrorApplier $validationErrorApplier, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         $data = new UserFormData();
         $form = $this->createForm(UserType::class, $data);
@@ -130,7 +130,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}/edit', name: 'users_edit', methods: ['GET', 'POST'])]
-    public function edit(int $id, Request $request, PhoenixApiClient $client, UserInputFactory $inputFactory, PhoenixValidationErrorApplier $validationErrorApplier, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
+    public function edit(int $id, Request $request, PhoenixApiClientInterface $client, UserInputFactory $inputFactory, PhoenixValidationErrorApplier $validationErrorApplier, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         try {
             $user = $client->getUser($id);
@@ -186,7 +186,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}/delete', name: 'users_delete', methods: ['POST'])]
-    public function delete(int $id, Request $request, PhoenixApiClient $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function delete(int $id, Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
     {
         if (!$this->isCsrfTokenValid('delete_user_'.$id, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
@@ -211,7 +211,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/import', name: 'users_import', methods: ['POST'])]
-    public function import(Request $request, PhoenixApiClient $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function import(Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
     {
         if (!$this->isCsrfTokenValid('import_users', (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();

@@ -6,6 +6,9 @@ services:
     App\:
         resource: '../src/'
 
+    App\PhoenixApi\PhoenixApiClientInterface:
+        alias: App\PhoenixApi\PhoenixApiClient
+
     App\PhoenixApi\PhoenixApiClient:
         arguments:
             $client: '@phoenix'
