@@ -9,6 +9,7 @@ defmodule PhoenixApiWeb.Router do
     pipe_through :api
 
     get "/health.json", HealthController, :show
+    resources "/users", UserController, only: [:index, :show, :create, :update, :delete]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
