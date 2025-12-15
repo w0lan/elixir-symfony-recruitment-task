@@ -1,7 +1,6 @@
 _build
 deps
 .elixir_ls
-.git
 .DS_Store
 
 
