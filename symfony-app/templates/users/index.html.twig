@@ -1,0 +1,103 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Users{% endblock %}
+
+{% block body %}
+    {% set q = query %}
+    {% set persistKeys = ['first_name', 'last_name', 'gender', 'birthdate_from', 'birthdate_to', 'sort_by', 'sort_dir', 'page', 'page_size'] %}
+
+    <div class="actions" style="justify-content: space-between; margin-bottom: 12px;">
+        <div class="actions">
+            <a class="btn btn-primary" href="{{ path('users_new') }}">New user</a>
+            <form class="inline" method="post" action="{{ path('users_import') }}">
+                <input type="hidden" name="_token" value="{{ csrf_token('import_users') }}">
+                {% for key in persistKeys %}
+                    {% if q[key] is defined %}
+                        <input type="hidden" name="{{ key }}" value="{{ q[key] }}">
+                    {% endif %}
+                {% endfor %}
+                <button class="btn" type="submit">Import</button>
+            </form>
+        </div>
+        {% if meta %}
+            <div>
+                Total: {{ meta.total }}
+            </div>
+        {% endif %}
+    </div>
+
+    {{ form_start(filterForm, { method: 'get' }) }}
+        <div class="grid">
+            <div>{{ form_row(filterForm.first_name) }}</div>
+            <div>{{ form_row(filterForm.last_name) }}</div>
+            <div>{{ form_row(filterForm.gender) }}</div>
+            <div>{{ form_row(filterForm.birthdate_from) }}</div>
+            <div>{{ form_row(filterForm.birthdate_to) }}</div>
+            <div>{{ form_row(filterForm.page_size) }}</div>
+            <div class="full actions">
+                <button class="btn btn-primary" type="submit">Apply</button>
+                <a class="btn" href="{{ path('users_index') }}">Reset</a>
+            </div>
+        </div>
+    {{ form_end(filterForm) }}
+
+    <table style="margin-top: 16px;">
+        <thead>
+            <tr>
+                {% set sortDirNext = sortDir == 'asc' ? 'desc' : 'asc' %}
+                {% for col in sortColumns %}
+                    <th>
+                        <a href="{{ path('users_index', q|merge({'sort_by': col.field, 'sort_dir': sortBy == col.field ? sortDirNext : 'asc'})) }}">{{ col.label }}</a>
+                    </th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.firstName }}</td>
+                    <td>{{ user.lastName }}</td>
+                    <td>{{ user.birthdate }}</td>
+                    <td>{{ user.gender }}</td>
+                    <td class="actions">
+                        <a class="btn" href="{{ path('users_edit', {id: user.id}) }}">Edit</a>
+                        <form class="inline" method="post" action="{{ path('users_delete', {id: user.id}) }}">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ user.id) }}">
+                            {% for key in persistKeys %}
+                                {% if q[key] is defined %}
+                                    <input type="hidden" name="{{ key }}" value="{{ q[key] }}">
+                                {% endif %}
+                            {% endfor %}
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6">No results</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if meta %}
+        {% set totalPages = (meta.total / meta.pageSize)|round(0, 'ceil') %}
+        {% set page = meta.page %}
+
+        <div class="actions" style="justify-content: space-between; margin-top: 12px;">
+            <div>
+                Page {{ page }} / {{ totalPages > 0 ? totalPages : 1 }}
+            </div>
+            <div class="actions">
+                {% if page > 1 %}
+                    <a class="btn" href="{{ path('users_index', q|merge({'page': page - 1, 'page_size': meta.pageSize})) }}">Prev</a>
+                {% endif %}
+                {% if page < totalPages %}
+                    <a class="btn" href="{{ path('users_index', q|merge({'page': page + 1, 'page_size': meta.pageSize})) }}">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

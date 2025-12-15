@@ -1,0 +1,13 @@
+{{ form_start(form) }}
+    <div class="grid">
+        <div>{{ form_row(form.firstName) }}</div>
+        <div>{{ form_row(form.lastName) }}</div>
+        <div>{{ form_row(form.birthdate) }}</div>
+        <div>{{ form_row(form.gender) }}</div>
+        <div class="full actions">
+            <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
+            <a class="btn" href="{{ path('users_index') }}">Back</a>
+        </div>
+    </div>
+{{ form_end(form) }}
+
