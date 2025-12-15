@@ -39,3 +39,15 @@ shell-symfony: ## Open a shell in the Symfony container
 shell-db: ## Open psql in the DB container
 	docker compose exec db psql -U postgres -d phoenix_app
 
+.PHONY: symfony-composer
+symfony-composer: ## Run composer in Symfony container (ARGS="...")
+	docker compose run --rm --no-deps symfony composer $(ARGS)
+
+.PHONY: symfony-install
+symfony-install: ## Install Symfony deps (composer install)
+	docker compose run --rm --no-deps symfony composer install
+
+.PHONY: symfony-console
+symfony-console: ## Run bin/console in Symfony container (ARGS="...")
+	docker compose run --rm --no-deps symfony php bin/console $(ARGS)
+
