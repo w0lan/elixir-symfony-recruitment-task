@@ -5,3 +5,8 @@ services:
 
     App\:
         resource: '../src/'
+
+    App\PhoenixApi\PhoenixApiClient:
+        arguments:
+            $client: '@phoenix'
+            $importToken: '%env(string:default::PHOENIX_IMPORT_TOKEN)%'
