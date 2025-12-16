@@ -8,7 +8,6 @@ use App\Form\Model\UsersFilterData;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -46,9 +45,11 @@ final class UsersFilterType extends AbstractType
                 'input' => 'datetime_immutable',
                 'property_path' => 'birthdateTo',
             ])
-            ->add('page_size', IntegerType::class, [
+            ->add('page_size', ChoiceType::class, [
                 'required' => false,
                 'property_path' => 'pageSize',
+                'choices' => UsersFilterData::AVAILABLE_PAGE_SIZES,
+                'placeholder' => false, // Don't show empty option if value is set
             ]);
     }
 

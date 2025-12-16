@@ -1,12 +1,13 @@
 {{ form_start(form) }}
-    <div class="grid">
-        <div>{{ form_row(form.firstName) }}</div>
-        <div>{{ form_row(form.lastName) }}</div>
-        <div>{{ form_row(form.birthdate) }}</div>
-        <div>{{ form_row(form.gender) }}</div>
-        <div class="full actions">
+    <div class="row g-3">
+        <div class="col-md-6">{{ form_row(form.firstName) }}</div>
+        <div class="col-md-6">{{ form_row(form.lastName) }}</div>
+        <div class="col-md-6">{{ form_row(form.birthdate) }}</div>
+        <div class="col-md-6">{{ form_row(form.gender) }}</div>
+        
+        <div class="col-12 mt-4 d-flex gap-2">
             <button class="btn btn-primary" type="submit">{{ submit_label }}</button>
-            <a class="btn" href="{{ path('users_index') }}">Back</a>
+            <a class="btn btn-outline-secondary" href="{{ path('users_index') }}">Back</a>
         </div>
     </div>
 {{ form_end(form) }}
