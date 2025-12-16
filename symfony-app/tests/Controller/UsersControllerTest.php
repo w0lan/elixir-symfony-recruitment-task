@@ -79,7 +79,7 @@ final class UsersControllerTest extends WebTestCase
         $this->assertResponseRedirects('/users');
         $env->client->followRedirect();
 
-        $this->assertSelectorTextContains('.flash-success', 'User created');
+        $this->assertSelectorTextContains('.alert-success', 'User created');
         $this->assertSame(1, $env->api->getUsersCount());
     }
 
@@ -125,7 +125,7 @@ final class UsersControllerTest extends WebTestCase
         $this->assertResponseRedirects('/users');
         $env->client->followRedirect();
 
-        $this->assertSelectorTextContains('.flash-success', 'User updated');
+        $this->assertSelectorTextContains('.alert-success', 'User updated');
 
         $user = $env->api->getUser(1);
         $this->assertSame('Anna', $user->firstName);
@@ -145,7 +145,7 @@ final class UsersControllerTest extends WebTestCase
         $this->assertResponseRedirects('/users');
         $env->client->followRedirect();
 
-        $this->assertSelectorTextContains('.flash-success', 'User deleted');
+        $this->assertSelectorTextContains('.alert-success', 'User deleted');
         $this->assertSame(0, $env->api->getUsersCount());
     }
 
@@ -165,7 +165,7 @@ final class UsersControllerTest extends WebTestCase
         $this->assertResponseRedirects('/users');
         $env->client->followRedirect();
 
-        $this->assertSelectorTextContains('.flash-error', 'User not found');
+        $this->assertSelectorTextContains('.alert-danger', 'User not found');
     }
 
     public function testImportCallsImportUsers(): void
@@ -180,6 +180,6 @@ final class UsersControllerTest extends WebTestCase
         $this->assertResponseRedirects('/users');
         $env->client->followRedirect();
 
-        $this->assertSelectorTextContains('.flash-success', 'Imported: 100');
+        $this->assertSelectorTextContains('.alert-success', 'Imported: 100');
     }
 }
