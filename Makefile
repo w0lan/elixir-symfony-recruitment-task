@@ -63,7 +63,7 @@ test-symfony: ## Run Symfony tests
 	docker compose run --rm --no-deps symfony php bin/phpunit
 
 .PHONY: lint
-lint: lint-cs lint-phpstan ## Run all linters
+lint: lint-cs lint-phpstan lint-phoenix ## Run all linters
 
 .PHONY: lint-cs
 lint-cs: ## Check code style (PHP CS Fixer)
@@ -76,3 +76,11 @@ fix-cs: ## Fix code style (PHP CS Fixer)
 .PHONY: lint-phpstan
 lint-phpstan: ## Run static analysis (PHPStan)
 	docker compose run --rm --no-deps symfony composer exec phpstan -- analyse --memory-limit=1G
+
+.PHONY: lint-phoenix
+lint-phoenix: ## Run Credo (Phoenix linter)
+	docker compose exec phoenix mix credo --strict
+
+.PHONY: lint-dialyzer
+lint-dialyzer: ## Run Dialyzer (Phoenix static analysis)
+	docker compose exec phoenix mix dialyzer
