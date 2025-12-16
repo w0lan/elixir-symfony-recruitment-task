@@ -45,11 +45,11 @@ defmodule PhoenixApi.Users do
 
   defp users_query(opts) do
     from(u in User)
-    |> maybe_filter_first_name(opts.first_name)
-    |> maybe_filter_last_name(opts.last_name)
-    |> maybe_filter_gender(opts.gender)
-    |> maybe_filter_birthdate_from(opts.birthdate_from)
-    |> maybe_filter_birthdate_to(opts.birthdate_to)
+    |> maybe_filter_first_name(Map.get(opts, :first_name))
+    |> maybe_filter_last_name(Map.get(opts, :last_name))
+    |> maybe_filter_gender(Map.get(opts, :gender))
+    |> maybe_filter_birthdate_from(Map.get(opts, :birthdate_from))
+    |> maybe_filter_birthdate_to(Map.get(opts, :birthdate_to))
   end
 
   defp maybe_filter_first_name(query, nil), do: query
