@@ -11,11 +11,18 @@ RUN apt-get update \
 
 WORKDIR /app
 
-RUN mkdir -p public \
-  && printf '%s\n' '<?php' 'echo "symfony: container ready";' > public/index.php
+ENV APP_ENV=dev
+ENV APP_DEBUG=1
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+COPY composer.json composer.lock symfony.lock ./
+RUN composer install --no-interaction --no-progress --no-scripts
+
+COPY . .
+RUN test -f .env || : > .env
 
 EXPOSE 8000
 
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "public"]
+CMD ["php", "-d", "variables_order=EGPCS", "-S", "0.0.0.0:8000", "-t", "public"]
 
 

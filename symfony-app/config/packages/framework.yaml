@@ -1,0 +1,24 @@
+# see https://symfony.com/doc/current/reference/configuration/framework.html
+framework:
+    secret: '%env(default:change_me:APP_SECRET)%'
+
+    # Note that the session will be started ONLY if you read or write from it.
+    session: true
+
+    csrf_protection: true
+
+    http_client:
+        scoped_clients:
+            phoenix:
+                base_uri: '%env(PHOENIX_BASE_URL)%'
+                timeout: 10
+                max_duration: 30
+
+    #esi: true
+    #fragments: true
+
+when@test:
+    framework:
+        test: true
+        session:
+            storage_factory_id: session.storage.factory.mock_file

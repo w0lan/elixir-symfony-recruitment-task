@@ -1,0 +1,15 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    App\:
+        resource: '../src/'
+
+    App\PhoenixApi\PhoenixApiClientInterface:
+        alias: App\PhoenixApi\PhoenixApiClient
+
+    App\PhoenixApi\PhoenixApiClient:
+        arguments:
+            $client: '@phoenix'
+            $importToken: '%env(string:default::PHOENIX_IMPORT_TOKEN)%'

@@ -1,0 +1,8 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New user{% endblock %}
+
+{% block body %}
+    <h1 style="margin-top: 0;">New user</h1>
+    {% include 'users/_form.html.twig' with { form: form, submit_label: 'Create' } %}
+{% endblock %}
