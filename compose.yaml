@@ -33,6 +33,10 @@ services:
         condition: service_healthy
     ports:
       - "4000:4000"
+    volumes:
+      - ./phoenix-api:/app
+      - /app/_build
+      - /app/deps
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:4000/health.json >/dev/null || exit 1"]
       interval: 5s
@@ -54,6 +58,16 @@ services:
       - "8000:8000"
     volumes:
       - ./symfony-app:/app
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    restart: unless-stopped
+    environment:
+      SWAGGER_JSON: /docs/openapi.yaml
+    volumes:
+      - ./docs/openapi.yaml:/docs/openapi.yaml
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_data:

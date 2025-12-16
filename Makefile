@@ -51,3 +51,36 @@ symfony-install: ## Install Symfony deps (composer install)
 symfony-console: ## Run bin/console in Symfony container (ARGS="...")
 	docker compose run --rm --no-deps symfony php bin/console $(ARGS)
 
+.PHONY: test
+test: test-phoenix test-symfony ## Run all tests
+
+.PHONY: test-phoenix
+test-phoenix: ## Run Phoenix tests
+	docker compose exec phoenix sh -c "MIX_ENV=test mix test"
+
+.PHONY: test-symfony
+test-symfony: ## Run Symfony tests
+	docker compose run --rm --no-deps symfony php bin/phpunit
+
+.PHONY: lint
+lint: lint-cs lint-phpstan lint-phoenix ## Run all linters
+
+.PHONY: lint-cs
+lint-cs: ## Check code style (PHP CS Fixer)
+	docker compose run --rm --no-deps symfony composer exec php-cs-fixer fix -- --dry-run --diff
+
+.PHONY: fix-cs
+fix-cs: ## Fix code style (PHP CS Fixer)
+	docker compose run --rm --no-deps symfony composer exec php-cs-fixer fix
+
+.PHONY: lint-phpstan
+lint-phpstan: ## Run static analysis (PHPStan)
+	docker compose run --rm --no-deps symfony composer exec phpstan -- analyse --memory-limit=1G
+
+.PHONY: lint-phoenix
+lint-phoenix: ## Run Credo (Phoenix linter)
+	docker compose exec phoenix mix credo --strict
+
+.PHONY: lint-dialyzer
+lint-dialyzer: ## Run Dialyzer (Phoenix static analysis)
+	docker compose exec phoenix mix dialyzer

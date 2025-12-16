@@ -1,0 +1,304 @@
+openapi: 3.0.3
+info:
+  title: Phoenix API
+  version: 1.0.0
+servers:
+  - url: http://localhost:4000
+paths:
+  /health.json:
+    get:
+      summary: Health check
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                required: [status]
+  /users:
+    get:
+      summary: List users
+      parameters:
+        - in: query
+          name: first_name
+          schema: { type: string }
+        - in: query
+          name: last_name
+          schema: { type: string }
+        - in: query
+          name: gender
+          schema:
+            type: string
+            enum: [male, female]
+        - in: query
+          name: birthdate_from
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: birthdate_to
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: sort_by
+          schema:
+            type: string
+            enum: [id, first_name, last_name, birthdate, gender, inserted_at, updated_at]
+          description: Default is id
+        - in: query
+          name: sort_dir
+          schema:
+            type: string
+            enum: [asc, desc]
+          description: Default is asc
+        - in: query
+          name: page
+          schema:
+            type: integer
+            minimum: 1
+          description: Default is 1
+        - in: query
+          name: page_size
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+          description: Default is 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/User" }
+                  meta:
+                    $ref: "#/components/schemas/UsersListMeta"
+                required: [data, meta]
+        "400":
+          description: Invalid query params
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+    post:
+      summary: Create user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UserInput" }
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/User" }
+                required: [data]
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+  /users/{id}:
+    get:
+      summary: Get user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/User" }
+                required: [data]
+        "400":
+          description: Invalid path params
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+    put:
+      summary: Update user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/UserInput" }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { $ref: "#/components/schemas/User" }
+                required: [data]
+        "400":
+          description: Invalid path params
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "422":
+          description: Validation error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+    delete:
+      summary: Delete user
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid path params
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "404":
+          description: Not found
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+  /import:
+    post:
+      summary: Import users (100 random users based on PESEL top names)
+      parameters:
+        - in: header
+          name: Authorization
+          required: false
+          schema:
+            type: string
+          description: Optional. Required only when IMPORT_TOKEN is set in API.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      inserted:
+                        type: integer
+                        example: 100
+                    required: [inserted]
+                required: [data]
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "502":
+          description: Import failed
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+        "500":
+          description: Internal error
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/ErrorResponse" }
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id: { type: integer, example: 123 }
+        first_name: { type: string, example: Jan }
+        last_name: { type: string, example: Kowalski }
+        birthdate:
+          type: string
+          format: date
+          example: "1990-01-31"
+        gender:
+          type: string
+          enum: [male, female]
+          example: male
+        inserted_at:
+          type: string
+          format: date-time
+          example: "2025-12-15T12:00:00Z"
+        updated_at:
+          type: string
+          format: date-time
+          example: "2025-12-15T12:00:00Z"
+      required: [id, first_name, last_name, birthdate, gender, inserted_at, updated_at]
+    UsersListMeta:
+      type: object
+      properties:
+        page: { type: integer, example: 1 }
+        page_size: { type: integer, example: 20 }
+        total: { type: integer, example: 150 }
+      required: [page, page_size, total]
+    UserInput:
+      type: object
+      properties:
+        first_name: { type: string, example: Jan }
+        last_name: { type: string, example: Kowalski }
+        birthdate:
+          type: string
+          format: date
+          example: "1990-01-31"
+        gender:
+          type: string
+          enum: [male, female]
+          example: male
+      required: [first_name, last_name, birthdate, gender]
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code: { type: string, example: validation_error }
+            message: { type: string, example: Validation error }
+            details: { type: object, additionalProperties: true }
+          required: [code, message, details]
+      required: [error]
+
+
