@@ -186,7 +186,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}/delete', name: 'users_delete', methods: ['POST'])]
-    public function delete(int $id, Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function delete(int $id, Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         if (!$this->isCsrfTokenValid('delete_user_'.$id, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
@@ -211,7 +211,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/import', name: 'users_import', methods: ['POST'])]
-    public function import(Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function import(Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         if (!$this->isCsrfTokenValid('import_users', (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();

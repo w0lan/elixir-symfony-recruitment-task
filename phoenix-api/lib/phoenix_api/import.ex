@@ -4,7 +4,8 @@ defmodule PhoenixApi.Import do
 
   @male_first_names_default_url "https://api.dane.gov.pl/resources/21495"
   @female_first_names_default_url "https://api.dane.gov.pl/resources/21489"
-  @last_names_default_url "https://api.dane.gov.pl/resources/54098"
+  @male_last_names_default_url "https://api.dane.gov.pl/resources/54097"
+  @female_last_names_default_url "https://api.dane.gov.pl/resources/54098"
 
   @min_birthdate ~D[1970-01-01]
   @max_birthdate ~D[2024-12-31]
@@ -12,22 +13,23 @@ defmodule PhoenixApi.Import do
   def run do
     with {:ok, male_first_names} <- fetch_top_100_first_names(male_first_names_url()),
          {:ok, female_first_names} <- fetch_top_100_first_names(female_first_names_url()),
-         {:ok, last_names} <- fetch_top_100_last_names(last_names_url()) do
+         {:ok, male_last_names} <- fetch_top_100_last_names(male_last_names_url()),
+         {:ok, female_last_names} <- fetch_top_100_last_names(female_last_names_url()) do
       now = DateTime.utc_now() |> DateTime.truncate(:second)
 
       entries =
         Enum.map(1..100, fn _ ->
           gender = Enum.random([:male, :female])
 
-          first_name =
+          {first_name, last_name} =
             case gender do
-              :male -> Enum.random(male_first_names)
-              :female -> Enum.random(female_first_names)
+              :male -> {Enum.random(male_first_names), Enum.random(male_last_names)}
+              :female -> {Enum.random(female_first_names), Enum.random(female_last_names)}
             end
 
           %{
             first_name: first_name,
-            last_name: Enum.random(last_names),
+            last_name: last_name,
             birthdate: random_birthdate(@min_birthdate, @max_birthdate),
             gender: gender,
             inserted_at: now,
@@ -52,8 +54,12 @@ defmodule PhoenixApi.Import do
     System.get_env("PESEL_FEMALE_FIRST_NAMES_URL") |> blank_to_nil() || @female_first_names_default_url
   end
 
-  defp last_names_url do
-    System.get_env("PESEL_LAST_NAMES_URL") |> blank_to_nil() || @last_names_default_url
+  defp male_last_names_url do
+    System.get_env("PESEL_MALE_LAST_NAMES_URL") |> blank_to_nil() || @male_last_names_default_url
+  end
+
+  defp female_last_names_url do
+    System.get_env("PESEL_FEMALE_LAST_NAMES_URL") |> blank_to_nil() || @female_last_names_default_url
   end
 
   defp blank_to_nil(nil), do: nil
