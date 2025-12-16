@@ -115,7 +115,6 @@ final class UsersListQueryFactoryTest extends TestCase
 
         $this->assertSame('last_name', $context->sortBy);
         $this->assertSame('desc', $context->sortDir);
-        $this->assertIsArray($context->uiQuery);
         $this->assertSame('Jan', $context->uiQuery['first_name']);
     }
 
@@ -130,3 +129,4 @@ final class UsersListQueryFactoryTest extends TestCase
         $this->assertSame(50, $context->query->pageSize);
     }
 }
+

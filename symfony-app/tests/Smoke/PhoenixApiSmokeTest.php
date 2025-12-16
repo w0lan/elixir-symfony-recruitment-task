@@ -38,8 +38,6 @@ final class PhoenixApiSmokeTest extends TestCase
             $status = $response->getStatusCode();
         } catch (TransportExceptionInterface) {
             $this->markTestSkipped('Phoenix API is not reachable.');
-
-            return;
         }
 
         if (200 !== $status) {

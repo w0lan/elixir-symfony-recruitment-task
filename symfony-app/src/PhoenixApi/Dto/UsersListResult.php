@@ -7,7 +7,7 @@ namespace App\PhoenixApi\Dto;
 final readonly class UsersListResult
 {
     /**
-     * @param UserDto[] $users
+     * @param array<UserDto> $users
      */
     public function __construct(
         public array $users,

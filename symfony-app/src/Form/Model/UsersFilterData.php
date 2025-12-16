@@ -8,6 +8,7 @@ use DateTimeImmutable;
 
 final class UsersFilterData
 {
+    /** @var array<int|string, int> */
     public const array AVAILABLE_PAGE_SIZES = [
         '50' => 50,
         '100' => 100,

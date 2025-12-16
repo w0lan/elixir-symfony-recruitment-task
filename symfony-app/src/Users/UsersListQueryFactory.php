@@ -25,10 +25,10 @@ final readonly class UsersListQueryFactory
             $sortDir = UsersSortConfig::SORT_DIR_ASC;
         }
 
-        $page = (int) $request->query->get('page', 1);
+        $page = (int) $request->query->get('page', '1');
         $page = max(1, $page);
 
-        $pageSize = $filterData->pageSize ?? (int) $request->query->get('page_size', 20);
+        $pageSize = $filterData->pageSize ?? (int) $request->query->get('page_size', '20');
         $pageSize = max(1, min(100, (int) $pageSize));
 
         $query = new UsersListQuery(

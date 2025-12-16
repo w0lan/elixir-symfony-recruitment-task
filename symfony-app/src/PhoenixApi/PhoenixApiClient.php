@@ -46,6 +46,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
 
         $users = [];
 
+        /** @var mixed $row */
         foreach ($data as $row) {
             if (!is_array($row)) {
                 throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
@@ -138,6 +139,10 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
         return (int) $inserted;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @return array<string, mixed>
+     */
     private function json(string $method, string $path, array $options = [], int $expectedStatus = 200): array
     {
         try {
@@ -168,6 +173,6 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
             throw PhoenixApiException::fromResponse($status, $payload);
         }
 
-        return is_array($payload) ? $payload : [];
+        return $payload;
     }
 }

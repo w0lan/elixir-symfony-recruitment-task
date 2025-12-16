@@ -13,7 +13,6 @@ final class UsersSortConfigTest extends TestCase
     {
         $fields = UsersSortConfig::allowedFields();
 
-        $this->assertIsArray($fields);
         $this->assertNotEmpty($fields);
     }
 
