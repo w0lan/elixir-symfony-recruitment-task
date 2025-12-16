@@ -55,13 +55,15 @@ defmodule PhoenixApi.Users do
   defp maybe_filter_first_name(query, nil), do: query
 
   defp maybe_filter_first_name(query, first_name) do
-    where(query, [u], ilike(u.first_name, ^"%#{first_name}%"))
+    search_term = "%#{sanitize_like(first_name)}%"
+    where(query, [u], ilike(u.first_name, ^search_term))
   end
 
   defp maybe_filter_last_name(query, nil), do: query
 
   defp maybe_filter_last_name(query, last_name) do
-    where(query, [u], ilike(u.last_name, ^"%#{last_name}%"))
+    search_term = "%#{sanitize_like(last_name)}%"
+    where(query, [u], ilike(u.last_name, ^search_term))
   end
 
   defp maybe_filter_gender(query, nil), do: query
@@ -89,5 +91,9 @@ defmodule PhoenixApi.Users do
   defp apply_pagination(query, %{page: page, page_size: page_size}) do
     offset = (page - 1) * page_size
     query |> limit(^page_size) |> offset(^offset)
+  end
+
+  defp sanitize_like(string) do
+    String.replace(string, ~r/[%_\\]/, "\\\\\\0")
   end
 end
