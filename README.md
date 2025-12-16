@@ -12,6 +12,11 @@ Wymagania: Docker, Docker Compose, Make.
    docker compose up -d --build
    ```
 
+2. Lista wszystkich dostępnych komend Make:
+   ```bash
+   make help
+   ```
+
 2. Dostępne usługi:
    - **Symfony App (Frontend)**: http://localhost:8000
    - **Phoenix API (Backend)**: http://localhost:4000
@@ -33,6 +38,11 @@ make test-symfony  # Tylko testy frontendu
 make lint          # Uruchamia PHP CS Fixer (dry-run) i PHPStan
 make fix-cs        # Automatycznie naprawia styl kodu (PHP CS Fixer)
 ```
+
+### Źródła danych
+Import użytkowników korzysta z danych z rejestrów PESEL:
+- **Imiona**: https://dane.gov.pl/pl/dataset/1501,lista-imion-wystepujacych-w-rejestrze-pesel
+- **Nazwiska**: https://dane.gov.pl/pl/dataset/1681,nazwiska-osob-zyjacych-wystepujace-w-rejestrze-pesel
 
 ### Struktura
 - `phoenix-api/`: Backend (Elixir/Phoenix) + PostgreSQL.

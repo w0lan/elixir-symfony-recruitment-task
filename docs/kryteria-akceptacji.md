@@ -3,7 +3,6 @@
 ### 1) Architektura
 - **Dwie aplikacje**: `phoenix-api` (backend) + `symfony-app` (frontend/panel) komunikują się po **REST API (JSON)**.
 - **Baza danych**: PostgreSQL.
-- **Decyzje architektoniczne (ADR)**: w katalogu `docs/adr/` są opisane i uzasadnione kluczowe decyzje architektoniczne (w tym otwarte kwestie implementacyjne).
 
 ### 2) Uruchomienie (Docker/Runbook)
 - **Docker Compose**: repo zawiera `docker-compose.yml` uruchamiający:
