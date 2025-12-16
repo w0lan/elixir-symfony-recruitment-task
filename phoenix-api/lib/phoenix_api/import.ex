@@ -37,6 +37,9 @@ defmodule PhoenixApi.Import do
           }
         end)
 
+      # We use insert_all for performance reasons.
+      # Note that this bypasses changeset validations, but since we generate data internally,
+      # we can ensure its validity in the map generation above.
       {inserted, _} = Repo.insert_all(User, entries)
       {:ok, inserted}
     else

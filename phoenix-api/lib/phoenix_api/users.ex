@@ -4,6 +4,10 @@ defmodule PhoenixApi.Users do
   alias PhoenixApi.Repo
   alias PhoenixApi.Users.User
 
+  @default_page 1
+  @default_page_size 50
+  @max_page_size 100
+
   def list_users(params) when is_map(params) do
     with {:ok, opts} <- parse_list_opts(params) do
       filtered_query = users_query(opts)
@@ -94,8 +98,8 @@ defmodule PhoenixApi.Users do
   end
 
   defp parse_list_opts(params) do
-    with {:ok, page} <- parse_int(params["page"], :page, 1, 1, nil),
-         {:ok, page_size} <- parse_int(params["page_size"], :page_size, 20, 1, 100),
+    with {:ok, page} <- parse_int(params["page"], :page, @default_page, 1, nil),
+         {:ok, page_size} <- parse_int(params["page_size"], :page_size, @default_page_size, 1, @max_page_size),
          {:ok, sort_by} <- parse_sort_by(params["sort_by"]),
          {:ok, sort_dir} <- parse_sort_dir(params["sort_dir"]),
          {:ok, birthdate_from} <- parse_date(params["birthdate_from"], :birthdate_from),
