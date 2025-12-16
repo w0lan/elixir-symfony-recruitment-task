@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller;
 
-use App\PhoenixApi\Dto\UserInput;
-use App\PhoenixApi\Exception\PhoenixApiException;
 use App\PhoenixApi\PhoenixApiClientInterface;
 use App\Tests\Fake\InMemoryPhoenixApiClient;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;

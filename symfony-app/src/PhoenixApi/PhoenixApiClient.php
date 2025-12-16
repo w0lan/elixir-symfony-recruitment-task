@@ -14,6 +14,7 @@ use App\PhoenixApi\Exception\PhoenixApiException;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 use function is_array;
 use function is_int;
 use function is_string;
@@ -45,6 +46,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
 
         $users = [];
 
+        /** @var mixed $row */
         foreach ($data as $row) {
             if (!is_array($row)) {
                 throw new PhoenixApiException(200, 'invalid_response', 'Invalid response');
@@ -120,7 +122,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
     {
         $options = [];
 
-        if ($this->importToken !== '') {
+        if ('' !== $this->importToken) {
             $options['headers'] = [
                 'Authorization' => 'Bearer '.$this->importToken,
             ];
@@ -137,6 +139,10 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
         return (int) $inserted;
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @return array<string, mixed>
+     */
     private function json(string $method, string $path, array $options = [], int $expectedStatus = 200): array
     {
         try {
@@ -151,7 +157,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
             throw new PhoenixApiException(0, 'transport_error', 'Transport error', [], $e);
         }
 
-        if ($status === $expectedStatus && $expectedStatus === 204) {
+        if ($status === $expectedStatus && 204 === $expectedStatus) {
             return [];
         }
 
@@ -167,6 +173,6 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
             throw PhoenixApiException::fromResponse($status, $payload);
         }
 
-        return is_array($payload) ? $payload : [];
+        return $payload;
     }
 }

@@ -16,6 +16,8 @@ defmodule PhoenixApi.Users.User do
     user
     |> cast(attrs, [:first_name, :last_name, :birthdate, :gender])
     |> validate_required([:first_name, :last_name, :birthdate, :gender])
+    |> validate_length(:first_name, max: 255)
+    |> validate_length(:last_name, max: 255)
   end
 end
 

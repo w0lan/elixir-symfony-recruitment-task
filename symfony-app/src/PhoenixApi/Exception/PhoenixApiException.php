@@ -6,6 +6,7 @@ namespace App\PhoenixApi\Exception;
 
 use RuntimeException;
 use Throwable;
+
 use function is_array;
 
 final class PhoenixApiException extends RuntimeException
@@ -16,11 +17,11 @@ final class PhoenixApiException extends RuntimeException
     public const string CODE_NOT_FOUND = 'not_found';
 
     public function __construct(
-        private readonly int    $statusCode,
+        private readonly int $statusCode,
         private readonly string $apiCode,
         private readonly string $apiMessage,
-        private readonly array  $apiDetails = [],
-        ?Throwable              $previous = null,
+        private readonly array $apiDetails = [],
+        ?Throwable $previous = null,
     ) {
         parent::__construct($apiMessage, 0, $previous);
     }

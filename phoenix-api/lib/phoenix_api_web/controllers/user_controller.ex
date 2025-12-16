@@ -3,12 +3,13 @@ defmodule PhoenixApiWeb.UserController do
 
   alias PhoenixApi.Users
   alias PhoenixApiWeb.APIError
+  alias PhoenixApiWeb.UserParams
 
   def index(conn, params) do
-    case Users.list_users(params) do
-      {:ok, users, meta} ->
-        render(conn, :index, users: users, meta: meta)
-
+    with {:ok, opts} <- UserParams.parse(params),
+         {:ok, users, meta} <- Users.list_users(opts) do
+      render(conn, :index, users: users, meta: meta)
+    else
       {:error, {:invalid_params, details}} ->
         APIError.send(conn, 400, "invalid_params", "Invalid query params", details)
     end

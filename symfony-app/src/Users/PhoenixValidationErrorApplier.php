@@ -7,6 +7,8 @@ namespace App\Users;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormInterface;
 
+use function is_array;
+
 final readonly class PhoenixValidationErrorApplier
 {
     public function apply(FormInterface $form, array $details): void
@@ -20,7 +22,7 @@ final readonly class PhoenixValidationErrorApplier
                 default => $field,
             };
 
-            if (!\is_array($messages)) {
+            if (!is_array($messages)) {
                 continue;
             }
 

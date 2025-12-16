@@ -11,17 +11,17 @@ final readonly class PhoenixApiUiErrorMapper
 {
     public function isTransportError(PhoenixApiException $exception): bool
     {
-        return $exception->apiCode() === PhoenixApiException::CODE_TRANSPORT_ERROR;
+        return PhoenixApiException::CODE_TRANSPORT_ERROR === $exception->apiCode();
     }
 
     public function isNotFound(PhoenixApiException $exception): bool
     {
-        return $exception->statusCode() === Response::HTTP_NOT_FOUND && $exception->apiCode() === PhoenixApiException::CODE_NOT_FOUND;
+        return Response::HTTP_NOT_FOUND === $exception->statusCode() && PhoenixApiException::CODE_NOT_FOUND === $exception->apiCode();
     }
 
     public function isValidationError(PhoenixApiException $exception): bool
     {
-        return $exception->statusCode() === Response::HTTP_UNPROCESSABLE_ENTITY && $exception->apiCode() === PhoenixApiException::CODE_VALIDATION_ERROR;
+        return Response::HTTP_UNPROCESSABLE_ENTITY === $exception->statusCode() && PhoenixApiException::CODE_VALIDATION_ERROR === $exception->apiCode();
     }
 
     public function responseStatus(PhoenixApiException $exception): int

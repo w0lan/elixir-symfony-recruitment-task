@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Form\Model\UserFormData;
 use App\Form\Model\UsersFilterData;
-use App\Form\UserType;
 use App\Form\UsersFilterType;
+use App\Form\UserType;
 use App\PhoenixApi\Exception\PhoenixApiException;
 use App\PhoenixApi\PhoenixApiClientInterface;
 use App\Users\PhoenixApiUiErrorMapper;
@@ -18,7 +18,6 @@ use App\Users\UsersListQueryFactory;
 use App\Users\UsersSortConfig;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -186,7 +185,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/{id<\\d+>}/delete', name: 'users_delete', methods: ['POST'])]
-    public function delete(int $id, Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function delete(int $id, Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         if (!$this->isCsrfTokenValid('delete_user_'.$id, (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
@@ -211,7 +210,7 @@ final class UsersController extends AbstractController
     }
 
     #[Route('/import', name: 'users_import', methods: ['POST'])]
-    public function import(Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): RedirectResponse
+    public function import(Request $request, PhoenixApiClientInterface $client, UsersIndexRedirectParamsExtractor $redirectParamsExtractor, PhoenixApiUiErrorMapper $errorMapper): Response
     {
         if (!$this->isCsrfTokenValid('import_users', (string) $request->request->get('_token'))) {
             throw $this->createAccessDeniedException();
