@@ -8,6 +8,8 @@ use App\Form\Model\UsersFilterData;
 use App\PhoenixApi\Dto\UsersListQuery;
 use Symfony\Component\HttpFoundation\Request;
 
+use function in_array;
+
 final readonly class UsersListQueryFactory
 {
     public function fromRequest(Request $request, UsersFilterData $filterData): UsersListQueryContext
@@ -15,11 +17,11 @@ final readonly class UsersListQueryFactory
         $sortBy = (string) $request->query->get('sort_by', 'id');
         $sortDir = (string) $request->query->get('sort_dir', UsersSortConfig::SORT_DIR_ASC);
 
-        if (!\in_array($sortBy, UsersSortConfig::allowedFields(), true)) {
+        if (!in_array($sortBy, UsersSortConfig::allowedFields(), true)) {
             $sortBy = 'id';
         }
 
-        if (!\in_array($sortDir, [UsersSortConfig::SORT_DIR_ASC, UsersSortConfig::SORT_DIR_DESC], true)) {
+        if (!in_array($sortDir, [UsersSortConfig::SORT_DIR_ASC, UsersSortConfig::SORT_DIR_DESC], true)) {
             $sortDir = UsersSortConfig::SORT_DIR_ASC;
         }
 

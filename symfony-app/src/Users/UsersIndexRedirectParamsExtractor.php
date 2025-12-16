@@ -27,11 +27,11 @@ final readonly class UsersIndexRedirectParamsExtractor
         foreach (self::KEYS as $key) {
             $value = $request->request->get($key);
 
-            if ($value === null) {
+            if (null === $value) {
                 $value = $request->query->get($key);
             }
 
-            if ($value === null || $value === '') {
+            if (null === $value || '' === $value) {
                 continue;
             }
 

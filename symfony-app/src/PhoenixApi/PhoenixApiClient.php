@@ -14,6 +14,7 @@ use App\PhoenixApi\Exception\PhoenixApiException;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 use function is_array;
 use function is_int;
 use function is_string;
@@ -120,7 +121,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
     {
         $options = [];
 
-        if ($this->importToken !== '') {
+        if ('' !== $this->importToken) {
             $options['headers'] = [
                 'Authorization' => 'Bearer '.$this->importToken,
             ];
@@ -151,7 +152,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
             throw new PhoenixApiException(0, 'transport_error', 'Transport error', [], $e);
         }
 
-        if ($status === $expectedStatus && $expectedStatus === 204) {
+        if ($status === $expectedStatus && 204 === $expectedStatus) {
             return [];
         }
 

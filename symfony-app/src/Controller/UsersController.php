@@ -6,8 +6,8 @@ namespace App\Controller;
 
 use App\Form\Model\UserFormData;
 use App\Form\Model\UsersFilterData;
-use App\Form\UserType;
 use App\Form\UsersFilterType;
+use App\Form\UserType;
 use App\PhoenixApi\Exception\PhoenixApiException;
 use App\PhoenixApi\PhoenixApiClientInterface;
 use App\Users\PhoenixApiUiErrorMapper;
@@ -18,7 +18,6 @@ use App\Users\UsersListQueryFactory;
 use App\Users\UsersSortConfig;
 use DateTimeImmutable;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;

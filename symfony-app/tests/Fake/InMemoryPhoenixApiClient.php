@@ -39,26 +39,26 @@ final class InMemoryPhoenixApiClient implements PhoenixApiClientInterface
     {
         $filtered = $this->users;
 
-        if ($query->firstName !== null && $query->firstName !== '') {
-            $filtered = array_filter($filtered, fn($u) => str_contains(strtolower($u['first_name']), strtolower($query->firstName)));
+        if (null !== $query->firstName && '' !== $query->firstName) {
+            $filtered = array_filter($filtered, fn ($u) => str_contains(strtolower($u['first_name']), strtolower($query->firstName)));
         }
 
-        if ($query->lastName !== null && $query->lastName !== '') {
-            $filtered = array_filter($filtered, fn($u) => str_contains(strtolower($u['last_name']), strtolower($query->lastName)));
+        if (null !== $query->lastName && '' !== $query->lastName) {
+            $filtered = array_filter($filtered, fn ($u) => str_contains(strtolower($u['last_name']), strtolower($query->lastName)));
         }
 
-        if ($query->gender !== null && $query->gender !== '') {
-            $filtered = array_filter($filtered, fn($u) => $u['gender'] === $query->gender);
+        if (null !== $query->gender && '' !== $query->gender) {
+            $filtered = array_filter($filtered, fn ($u) => $u['gender'] === $query->gender);
         }
 
-        if ($query->birthdateFrom !== null) {
+        if (null !== $query->birthdateFrom) {
             $from = $query->birthdateFrom->format('Y-m-d');
-            $filtered = array_filter($filtered, fn($u) => $u['birthdate'] >= $from);
+            $filtered = array_filter($filtered, fn ($u) => $u['birthdate'] >= $from);
         }
 
-        if ($query->birthdateTo !== null) {
+        if (null !== $query->birthdateTo) {
             $to = $query->birthdateTo->format('Y-m-d');
-            $filtered = array_filter($filtered, fn($u) => $u['birthdate'] <= $to);
+            $filtered = array_filter($filtered, fn ($u) => $u['birthdate'] <= $to);
         }
 
         $sortField = match ($query->sortBy) {
@@ -74,14 +74,15 @@ final class InMemoryPhoenixApiClient implements PhoenixApiClientInterface
 
         usort($filtered, function ($a, $b) use ($sortField, $query) {
             $result = $a[$sortField] <=> $b[$sortField];
-            return $query->sortDir === 'desc' ? -$result : $result;
+
+            return 'desc' === $query->sortDir ? -$result : $result;
         });
 
         $total = count($filtered);
         $offset = ($query->page - 1) * $query->pageSize;
         $paginated = array_slice($filtered, $offset, $query->pageSize);
 
-        $users = array_map(fn($data) => UserDto::fromArray($data), $paginated);
+        $users = array_map(fn ($data) => UserDto::fromArray($data), $paginated);
         $meta = new UsersListMeta($query->page, $query->pageSize, $total);
 
         return new UsersListResult($users, $meta);
@@ -140,6 +141,7 @@ final class InMemoryPhoenixApiClient implements PhoenixApiClientInterface
     public function importUsers(): int
     {
         $this->importedCount = 100;
+
         return $this->importedCount;
     }
 

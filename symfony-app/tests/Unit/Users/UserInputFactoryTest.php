@@ -6,6 +6,7 @@ namespace App\Tests\Unit\Users;
 
 use App\Form\Model\UserFormData;
 use App\Users\UserInputFactory;
+use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
 
 final class UserInputFactoryTest extends TestCase
@@ -15,7 +16,7 @@ final class UserInputFactoryTest extends TestCase
         $formData = new UserFormData();
         $formData->firstName = 'Jan';
         $formData->lastName = 'Kowalski';
-        $formData->birthdate = new \DateTimeImmutable('1990-05-15');
+        $formData->birthdate = new DateTimeImmutable('1990-05-15');
         $formData->gender = 'male';
 
         $factory = new UserInputFactory();
@@ -32,7 +33,7 @@ final class UserInputFactoryTest extends TestCase
         $formData = new UserFormData();
         $formData->firstName = 'Anna';
         $formData->lastName = 'Nowak';
-        $formData->birthdate = new \DateTimeImmutable('2000-12-31');
+        $formData->birthdate = new DateTimeImmutable('2000-12-31');
         $formData->gender = 'female';
 
         $factory = new UserInputFactory();
