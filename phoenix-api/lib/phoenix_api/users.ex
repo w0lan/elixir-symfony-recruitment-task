@@ -1,10 +1,28 @@
 defmodule PhoenixApi.Users do
   import Ecto.Query, warn: false
+  require Logger
 
   alias PhoenixApi.Repo
   alias PhoenixApi.Users.User
+  alias PhoenixApi.Users.CacheManager
 
   def list_users(opts) when is_map(opts) do
+    cache_key = {:users_list, opts}
+
+    case :ets.lookup(:users_cache, cache_key) do
+      [{^cache_key, result}] ->
+        Logger.debug("Cache HIT for users_list")
+        result
+
+      [] ->
+        {time, result} = :timer.tc(fn -> fetch_users_from_db(opts) end)
+        :ets.insert(:users_cache, {cache_key, result})
+        Logger.debug("Cache MISS for users_list. Fetched from DB in #{time / 1000}ms")
+        result
+    end
+  end
+
+  defp fetch_users_from_db(opts) do
     filtered_query = users_query(opts)
 
     total = Repo.aggregate(filtered_query, :count, :id)
@@ -28,19 +46,48 @@ defmodule PhoenixApi.Users do
   end
 
   def create_user(attrs) when is_map(attrs) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    result =
+      %User{}
+      |> User.changeset(attrs)
+      |> Repo.insert()
+
+    case result do
+      {:ok, user} ->
+        CacheManager.invalidate()
+        {:ok, user}
+
+      error ->
+        error
+    end
   end
 
   def update_user(%User{} = user, attrs) when is_map(attrs) do
-    user
-    |> User.changeset(attrs)
-    |> Repo.update()
+    result =
+      user
+      |> User.changeset(attrs)
+      |> Repo.update()
+
+    case result do
+      {:ok, updated_user} ->
+        CacheManager.invalidate()
+        {:ok, updated_user}
+
+      error ->
+        error
+    end
   end
 
   def delete_user(%User{} = user) do
-    Repo.delete(user)
+    result = Repo.delete(user)
+
+    case result do
+      {:ok, deleted_user} ->
+        CacheManager.invalidate()
+        {:ok, deleted_user}
+
+      error ->
+        error
+    end
   end
 
   defp users_query(opts) do

@@ -7,11 +7,15 @@ defmodule PhoenixApi.Application do
 
   @impl true
   def start(_type, _args) do
-    :ets.new(:users_cache, [:set, :public, :named_table, { :read_concurrency, true }])    children = [
+    # Create ETS table for caching users
+    :ets.new(:users_cache, [:set, :public, :named_table, read_concurrency: true])
+
+    children = [
       PhoenixApiWeb.Telemetry,
       PhoenixApi.Repo,
       {DNSCluster, query: Application.get_env(:phoenix_api, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: PhoenixApi.PubSub},
+      PhoenixApi.Users.CacheManager,
       # Start a worker by calling: PhoenixApi.Worker.start_link(arg)
       # {PhoenixApi.Worker, arg},
       # Start to serve requests, typically the last entry

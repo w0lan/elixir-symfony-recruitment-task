@@ -1,6 +1,7 @@
 defmodule PhoenixApi.Import do
   alias PhoenixApi.Repo
   alias PhoenixApi.Users.User
+  alias PhoenixApi.Users.CacheManager
 
   @male_first_names_default_url "https://api.dane.gov.pl/resources/21495"
   @female_first_names_default_url "https://api.dane.gov.pl/resources/21489"
@@ -41,6 +42,7 @@ defmodule PhoenixApi.Import do
       # Note that this bypasses changeset validations, but since we generate data internally,
       # we can ensure its validity in the map generation above.
       {inserted, _} = Repo.insert_all(User, entries)
+      CacheManager.invalidate()
       {:ok, inserted}
     else
       {:error, {:fetch_failed, details}} -> {:error, {:fetch_failed, details}}
