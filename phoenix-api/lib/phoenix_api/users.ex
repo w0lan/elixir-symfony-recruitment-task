@@ -4,7 +4,6 @@ defmodule PhoenixApi.Users do
 
   alias PhoenixApi.Repo
   alias PhoenixApi.Users.User
-  alias PhoenixApi.Users.CacheManager
 
   def list_users(opts) when is_map(opts) do
     cache_key = {:users_list, opts}
@@ -53,7 +52,7 @@ defmodule PhoenixApi.Users do
 
     case result do
       {:ok, user} ->
-        CacheManager.invalidate()
+        Phoenix.PubSub.broadcast(PhoenixApi.PubSub, "user_events", {:user_changed, user.id})
         {:ok, user}
 
       error ->
@@ -69,7 +68,7 @@ defmodule PhoenixApi.Users do
 
     case result do
       {:ok, updated_user} ->
-        CacheManager.invalidate()
+        Phoenix.PubSub.broadcast(PhoenixApi.PubSub, "user_events", {:user_changed, updated_user.id})
         {:ok, updated_user}
 
       error ->
@@ -82,7 +81,7 @@ defmodule PhoenixApi.Users do
 
     case result do
       {:ok, deleted_user} ->
-        CacheManager.invalidate()
+        Phoenix.PubSub.broadcast(PhoenixApi.PubSub, "user_events", {:user_changed, deleted_user.id})
         {:ok, deleted_user}
 
       error ->

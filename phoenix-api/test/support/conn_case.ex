@@ -33,6 +33,8 @@ defmodule PhoenixApiWeb.ConnCase do
 
   setup tags do
     PhoenixApi.DataCase.setup_sandbox(tags)
+    # Clear ETS cache between tests
+    :ets.delete_all_objects(:users_cache)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end
