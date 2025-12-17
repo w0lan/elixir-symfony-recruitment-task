@@ -62,6 +62,9 @@ final class UsersController extends AbstractController
     #[Route('', name: 'users_index', methods: ['GET'])]
     public function index(Request $request, PhoenixApiClientInterface $client, UsersListQueryFactory $queryFactory, PhoenixApiUiErrorMapper $errorMapper): Response
     {
+        $traceId = $request->attributes->get('trace_id') ?: uniqid('trace-', true);
+        $request->attributes->set('trace_id', $traceId);
+
         $filterData = new UsersFilterData();
         $filterForm = $this->createForm(UsersFilterType::class, $filterData);
         $filterForm->handleRequest($request);

@@ -11,6 +11,7 @@ use App\PhoenixApi\Dto\UsersListQuery;
 use App\PhoenixApi\Dto\UsersListResult;
 use App\PhoenixApi\Exception\InvalidPayloadException;
 use App\PhoenixApi\Exception\PhoenixApiException;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
@@ -23,6 +24,7 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
 {
     public function __construct(
         private HttpClientInterface $client,
+        private RequestStack $requestStack,
         private string $importToken = '',
     ) {
     }
@@ -145,6 +147,16 @@ final readonly class PhoenixApiClient implements PhoenixApiClientInterface
      */
     private function json(string $method, string $path, array $options = [], int $expectedStatus = 200): array
     {
+        $currentRequest = $this->requestStack->getCurrentRequest();
+        if ($currentRequest !== null) {
+            $traceId = $currentRequest->attributes->get('trace_id');
+            error_log('PHOENIX_API_CLIENT: trace_id from request: ' . ($traceId ?? 'null'));
+            if ($traceId !== null) {
+                $options['headers']['X-Trace-ID'] = $traceId;
+                error_log('PHOENIX_API_CLIENT: sending X-Trace-ID header: ' . $traceId);
+            }
+        }
+
         try {
             $response = $this->client->request($method, $path, $options);
         } catch (TransportExceptionInterface $e) {

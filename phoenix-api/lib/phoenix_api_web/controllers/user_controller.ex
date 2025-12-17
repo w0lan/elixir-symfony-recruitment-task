@@ -1,11 +1,14 @@
 defmodule PhoenixApiWeb.UserController do
   use PhoenixApiWeb, :controller
+  require Logger
 
   alias PhoenixApi.Users
   alias PhoenixApiWeb.APIError
   alias PhoenixApiWeb.UserParams
 
   def index(conn, params) do
+    Logger.info("Listing users [#{conn.assigns.trace_id}]")
+
     with {:ok, opts} <- UserParams.parse(params),
          {:ok, users, meta} <- Users.list_users(opts) do
       render(conn, :index, users: users, meta: meta)

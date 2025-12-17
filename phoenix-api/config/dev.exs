@@ -61,8 +61,10 @@ config :phoenix_api, PhoenixApiWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :phoenix_api, dev_routes: true
 
-# Do not include metadata nor timestamps in development logs
-config :logger, :default_formatter, format: "[$level] $message\n"
+# Include trace_id in development logs
+config :logger, :default_formatter,
+  format: "[$level] $message\n",
+  metadata: [:trace_id]
 
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.

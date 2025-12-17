@@ -12,4 +12,7 @@ services:
     App\PhoenixApi\PhoenixApiClient:
         arguments:
             $client: '@phoenix'
+            $requestStack: '@request_stack'
             $importToken: '%env(string:default::PHOENIX_IMPORT_TOKEN)%'
+
+    App\Middleware\TraceIdMiddleware:

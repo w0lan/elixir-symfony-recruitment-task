@@ -2,6 +2,7 @@ defmodule PhoenixApiWeb.Router do
   use PhoenixApiWeb, :router
 
   pipeline :api do
+    plug PhoenixApiWeb.TraceIdPlug
     plug :accepts, ["json"]
   end
 

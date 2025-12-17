@@ -14,7 +14,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d phoenix_app"]
-      interval: 5s
+      interval: 600s
       timeout: 3s
       retries: 30
       start_period: 20s
@@ -39,7 +39,7 @@ services:
       - /app/deps
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:4000/health.json >/dev/null || exit 1"]
-      interval: 5s
+      interval: 600s
       timeout: 3s
       retries: 30
       start_period: 10s

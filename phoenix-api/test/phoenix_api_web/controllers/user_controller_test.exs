@@ -31,10 +31,10 @@ defmodule PhoenixApiWeb.UserControllerTest do
     test "lists users with pagination meta", %{conn: conn} do
       user_fixture()
       conn = get(conn, ~p"/users")
-      
+ni
       data = json_response(conn, 200)["data"]
       meta = json_response(conn, 200)["meta"]
-      
+
       assert length(data) == 1
       assert meta["total"] == 1
       assert meta["page"] == 1
