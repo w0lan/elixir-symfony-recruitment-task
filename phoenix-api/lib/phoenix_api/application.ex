@@ -7,7 +7,7 @@ defmodule PhoenixApi.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
+    :ets.new(:users_cache, [:set, :public, :named_table, { :read_concurrency, true }])    children = [
       PhoenixApiWeb.Telemetry,
       PhoenixApi.Repo,
       {DNSCluster, query: Application.get_env(:phoenix_api, :dns_cluster_query) || :ignore},
